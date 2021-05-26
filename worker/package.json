@@ -1,0 +1,12 @@
+{
+	"dependencies": {
+		"nodemon": "1.18.3",
+		"pg": "^8.6.0",
+		"redis": "^3.1.2",
+		"unirest": "^0.6.0"
+	},
+	"scripts": {
+		"start": "node index.js",
+    "dev": "nodemon index.js"
+	}
+}

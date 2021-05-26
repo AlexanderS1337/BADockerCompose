@@ -1,0 +1,22 @@
+language: generic
+os: linux
+dist: xenial
+services:
+  - docker
+
+before_install:
+  - docker build -t alexanders1337/steamapp-test -f ./steamapp/Dockerfile.dev ./steamapp
+
+script:
+  - docker run -e CI=true alexanders1337/steamapp-test npm test
+
+after_success:
+  - docker build ./steamapp -t alexanders1337/steamapp
+  - docker build ./server -t alexanders1337/server
+  - docker build ./worker -t alexanders1337/worker
+  #docker login
+  - echo "$DOCKER_PW" | docker login -u alexanders1337 --password-stdin
+  #push images to docker hub
+  - docker push alexanders1337/steamapp
+  - docker push alexanders1337/server
+  - docker push alexanders1337/worker
