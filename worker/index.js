@@ -30,12 +30,12 @@ function getSteamFriends(steamid) {
     "relationship": "friend"	  
   });
   request.end(function (response) {
-	if (typeof response.body["friendslist"] !== 'undefined') {
-	  insertSteamFriends(steamid, response.body["friendslist"]["friends"]);
-	  rClient.hset("ids", steamid, "done");
-	} else {
-	  rClient.hset("ids", steamid, "private");
-	}
+    if (typeof response.body["friendslist"] !== 'undefined') {
+      insertSteamFriends(steamid, response.body["friendslist"]["friends"]);
+      rClient.hset("ids", steamid, "done");
+    } else {
+      rClient.hset("ids", steamid, "private");
+    }
   });
 }
 

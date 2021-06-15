@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
 });
 
 app.post("/api/friends", async (req, res) => {
-  const steamid = req.body.steamid;
+  const steamid = req.body.steamID;
   if (!Number(steamid)) {
     return res.status(400).send("Geben Sie eine gültige SteamID ein!");
   } else if((steamid / 1000000000000000) < 1){
@@ -60,9 +60,9 @@ app.get("/api/friends/current", (req, res) => {
 app.get('/api/friends/:steamid', (req, res) => {
   pgClient.query("SELECT * FROM "+conf.pgTable+" WHERE steamid="+req.params.steamid, (error, results) => {
     if (error) {
-      throw error;
+      res.status(200).json({});
     }
-    res.status(200).json(results.rows)
+    res.status(200).json(results.rows);
   })
 });
 
