@@ -10,6 +10,16 @@ services:
       - '5432:5432'
   redis:
     image: 'redis:latest'
+  steamapp:
+    build:
+      dockerfile: Dockerfile.dev
+      context: ./steamapp
+    volumes:
+      - /app/node_modules
+      - ./steamapp:/app
+    stdin_open: true
+    ports:
+      - '3000:3000'
   api:
     build:
       dockerfile: Dockerfile.dev
@@ -26,18 +36,9 @@ services:
       - PGPASSWORD=postgres_password
       - PGPORT=5432
       - PGTABLE=steamfriends
+      - STEAMKEY=D7A2BC773100DB811088B781C6C8D8D1
     ports:
       - '3001:3001'
-  steamapp:
-    build:
-      dockerfile: Dockerfile.dev
-      context: ./steamapp
-    volumes:
-      - /app/node_modules
-      - ./steamapp:/app
-    stdin_open: true
-    ports:
-      - '3000:3000'
   worker:
     build:
       dockerfile: Dockerfile.dev
@@ -54,4 +55,4 @@ services:
       - PGPASSWORD=postgres_password
       - PGPORT=5432
       - PGTABLE=steamfriends
-      - STEAMKEY=XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      - STEAMKEY=D7A2BC773100DB811088B781C6C8D8D1

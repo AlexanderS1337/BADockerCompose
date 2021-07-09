@@ -37,8 +37,25 @@ app.get('/', (req, res) => {
   res.send("Willkommen zu SteamFriendsApp!");
 });
 
+app.post("/api/getrealid", async (req, res) => {
+  var request = unirest.get("http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/");
+  request.query({ 
+    "key": conf.steamKey,
+    "vanityurl": req.body.steamID
+  });
+  request.end(function (response) {
+    if (typeof response.body['response']['steamid'] !== 'undefined') {
+      console.log('getid sagt: '+response.body['response']['steamid']);
+      res.send(response.body['response']['steamid']);
+    } else {
+      console.log("Konnte ID nicht bestimmen");
+      res.status(400).send("Geben Sie eine gültige SteamID ein!");
+    }
+  });
+});
+
 app.post("/api/friends", async (req, res) => {
-  const steamid = req.body.steamID;
+  var steamid = req.body.reqid;
   if (!Number(steamid)) {
     return res.status(400).send("Geben Sie eine gültige SteamID ein!");
   } else if((steamid / 1000000000000000) < 1){
@@ -58,12 +75,17 @@ app.get("/api/friends/current", (req, res) => {
 });
 
 app.get('/api/friends/:steamid', (req, res) => {
-  pgClient.query("SELECT * FROM "+conf.pgTable+" WHERE steamid="+req.params.steamid, (error, results) => {
-    if (error) {
-      res.status(200).json({});
-    }
-    res.status(200).json(results.rows);
-  })
+  if(!Number(req.params.steamid)){
+    res.status(200).json({});
+  } else {
+    pgClient.query("SELECT * FROM "+conf.pgTable+" WHERE steamid="+req.params.steamid, (error, results) => {
+      if (error) {
+        res.status(200).json({});
+      } else {
+        res.status(200).json(results.rows);
+      }
+    })
+  }
 });
 
 app.get('/api/friends/', (req, res) => {

@@ -2,41 +2,54 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 
 const Friends = () => {
-  const [ seenSteamIDs, setSeenSteamIDs] = useState([])
-  const [ friends, setFriends] = useState([])
-  const [ steamID, setSteamID] = useState('')
+  const [ seenSteamIDs, setSeenSteamIDs] = useState([]);
+  const [ friends, setFriends] = useState([]);
+  const [ steamID, setSteamID] = useState('');
   
   const fetchIDs = async () => {
+    var check = await axios.get("/api/friends/current");
+    check = check.data;
+    console.log(check[steamID]);
+    while((check[steamID] != 'done') && (check[steamID] != 'private')){
+      check = await axios.get("/api/friends/current");
+      check = check.data;
+    }
+    console.log(check[steamID]);
     let ids = await axios.get("/api/friends/"+steamID);
-    /*while(ids.data.length == 0){
-      ids = await axios.get("/api/friends/"+steamID);
-    }*/
-    setFriends(ids.data)
-    fetchFriends()
+    setFriends(ids.data);
+    fetchFriends();
   }
 
   const fetchFriends = async () => {
     const seenSteamIDs = await axios.get("/api/friends/current");
-    setSeenSteamIDs(seenSteamIDs.data)
+    setSeenSteamIDs(seenSteamIDs.data);
   }
   
   useEffect(() => {
-    fetchFriends()
+    fetchFriends();
   }, [])
   
   const handleSubmit = async event => {
     event.preventDefault();
+    if(!Number(steamID)){
+      var reqid = await axios.post('/api/getrealid', { steamID });
+      reqid = reqid.data;
+      setSteamID(reqid);
+    } else {
+      var reqid = steamID;
+    }
     var flag = 1;
     for(let key in seenSteamIDs){
-      if(key == steamID){
+      if(key == reqid){
         flag = 0;
+        console.log("ID ist schon vorhanden");
         break;
       }
     }
     if(flag){
-      await axios.post('/api/friends', { steamID });
+      await axios.post('/api/friends', { reqid });
     }
-    fetchIDs()
+    fetchIDs();
   };
   
   const renderSeenSteamIDs = () => {
@@ -47,7 +60,7 @@ const Friends = () => {
     const entries = [];
     for (let key in friends) {
       entries.push(
-        <div>
+        <div key={`${friends[key]["friendid"]}`}>
           <a href={`https://steamcommunity.com/profiles/${friends[key]["friendid"]}`}>{friends[key]["friendid"]}</a>
         </div>
       );
@@ -62,7 +75,7 @@ const Friends = () => {
         <label>Enter your SteamID:</label>
         <input
         value={steamID}
-        onChange={event => setSteamID( event.target.value)}
+        onChange={event => setSteamID(event.target.value)}
         />
         <button>Submit</button>
       </form>

@@ -1,4 +1,5 @@
 module.exports = {
+  steamKey: process.env.STEAMKEY,
   redisHost: process.env.REDIS_HOST,
   redisPort: process.env.REDIS_PORT,
   pgHost: process.env.PGHOST,
