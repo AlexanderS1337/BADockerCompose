@@ -36,7 +36,7 @@ services:
       - PGPASSWORD=postgres_password
       - PGPORT=5432
       - PGTABLE=steamfriends
-      - STEAMKEY=D7A2BC773100DB811088B781C6C8D8D1
+      - STEAMKEY=D0BE124A87EC59ACF0409F455B01B549
     ports:
       - '3001:3001'
   worker:
@@ -55,4 +55,4 @@ services:
       - PGPASSWORD=postgres_password
       - PGPORT=5432
       - PGTABLE=steamfriends
-      - STEAMKEY=D7A2BC773100DB811088B781C6C8D8D1
+      - STEAMKEY=D0BE124A87EC59ACF0409F455B01B549
