@@ -12,16 +12,14 @@ spec:
       labels:
         app: postgres
     spec:
-      volumes:
-        - name: postgres-volume
-          persistentVolumeClaim:
-            claimName: postgres-persistentvolume-claim
       containers:
         - name: postgres
           image: postgres
           env:
             - name: POSTGRES_USER
               value: postgres
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata/
             - name: POSTGRES_PASSWORD
               valueFrom: 
                 secretKeyRef:
@@ -32,6 +30,10 @@ spec:
           volumeMounts:
             - name: postgres-volume
               mountPath: /var/lib/postgresql/data
+      volumes:
+        - name: postgres-volume
+          persistentVolumeClaim:
+            claimName: postgres-persistentvolume-claim
 ---
 apiVersion: v1
 kind: Service
