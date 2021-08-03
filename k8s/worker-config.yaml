@@ -1,0 +1,42 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: worker-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: worker
+  template:
+    metadata:
+      labels:
+        app: worker
+    spec:
+      containers:
+        - name: worker
+          image: alexanders1337/worker
+          env:
+            - name: REDIS_HOST
+              value: redis-clusterip-service
+            - name: REDIS_PORT
+              value: '6379'
+            - name: PGUSER
+              value: postgres
+            - name: PGHOST
+              value: postgres-clusterip-service
+            - name: PGDATABASE
+              value: postgres
+            - name: PGPASSWORD
+              valueFrom: 
+                secretKeyRef:
+                  name: pgpassword
+                  key: PGPASSWORD
+            - name: PGPORT
+              value: '5432'
+            - name: PGTABLE
+              value: steamfriends
+            - name: STEAMKEY
+              valueFrom: 
+                secretKeyRef:
+                  name: steamapikey
+                  key: STEAMKEY

@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: steamapp-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: steamapp
+  template:
+    metadata:
+      labels:
+        app: steamapp
+    spec:
+      containers:
+        - name: steamapp
+          image: alexanders1337/steamapp
+          ports:
+            - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: steamapp-clusterip-service
+spec:
+  type: ClusterIP
+  selector:
+    app: steamapp
+  ports:
+    - port: 3000
+      targetPort: 3000
