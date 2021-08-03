@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: postgres-persistentvolume
+spec:
+  storageClassName: "Postgres_Storage"
+  capacity:
+    storage: 10GB
+  accessModes:
+    - ReadWriteOnce
+  claimRef:
+    namespace: default
+    name: postgres-persistentvolume-claim
+  gcePersistentDisk:
+    pdName: postgres-persistentvolume
+    fsType: ext4
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: postgres-persistentvolume-claim
+spec:
+  storageClassName: "Postgres_Storage"
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10GB
